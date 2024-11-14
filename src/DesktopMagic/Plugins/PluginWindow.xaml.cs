@@ -12,6 +12,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading;
 using System.Timers;
 using System.Windows;
@@ -32,6 +33,7 @@ public partial class PluginWindow : Window
     private Thread? pluginThread;
     private System.Timers.Timer? valueTimer;
     private Plugin? pluginClassInstance;
+    private AssemblyLoadContext loadContext;
 
     public bool IsRunning { get; private set; } = true;
     public PluginMetadata PluginMetadata { get; private set; }
@@ -71,6 +73,8 @@ public partial class PluginWindow : Window
         Height = settings.Size.Y;
 
         PluginFolderPath = pluginFolderPath;
+
+        loadContext = new AssemblyLoadContext(pluginMetadata.Name, true);
     }
 
     public PluginWindow(Plugin pluginClassInstance, PluginMetadata pluginMetadata, PluginSettings settings) : this(pluginMetadata, settings, string.Empty)
@@ -202,7 +206,7 @@ public partial class PluginWindow : Window
         object? instance = pluginClassInstance;
         if (instance is null)
         {
-            Assembly dll = Assembly.LoadFrom($"{PluginFolderPath}\\main.dll");
+            Assembly dll = loadContext.LoadFromAssemblyPath($"{PluginFolderPath}\\main.dll");
             Type? instanceType = Array.Find(dll.GetTypes(), type => type.GetTypeInfo().BaseType == typeof(Plugin));
 
             if (instanceType is null)
@@ -216,10 +220,11 @@ public partial class PluginWindow : Window
 
             instance = Activator.CreateInstance(instanceType);
         }
+
         if (instance is Plugin plugin)
         {
             pluginClassInstance = plugin;
-            pluginClassInstance.Application = new Plugins.PluginData(this, settings);
+            pluginClassInstance.Application = new PluginData(this, settings);
         }
         else
         {
@@ -384,6 +389,7 @@ public partial class PluginWindow : Window
         App.Logger.LogInfo($"\"{PluginMetadata.Name}\" - Stopping plugin", source: "Plugin");
         IsRunning = false;
         pluginClassInstance?.Stop();
+        loadContext.Unload();
     }
 
     #region Window Events
