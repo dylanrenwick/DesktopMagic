@@ -1,0 +1,465 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DesktopMagic.Api</name>
+    </assembly>
+    <members>
+        <member name="T:DesktopMagic.Api.Drawing.GraphicsExtentions">
+            <summary>
+            Extensions for the <see cref="T:System.Drawing.Graphics"/> class.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Drawing.GraphicsExtentions.DrawStringMonospace(System.Drawing.Graphics,System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single)">
+            <summary>
+            <inheritdoc cref="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single)"/>
+            </summary>
+            <param name="graphics">Graphics object.</param>
+            <param name="s">String to draw.</param>
+            <param name="font"><see cref="T:System.Drawing.Font"/> that defines the text format of the string.</param>
+            <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the color and texture of the drawn text.</param>
+            <param name="x">The x-coordinate of the upper-left corner of the drawn text.</param>
+            <param name="y">The y-coordinate of the upper-left corner of the drawn text.</param>
+        </member>
+        <member name="M:DesktopMagic.Api.Drawing.GraphicsExtentions.DrawStringMonospace(System.Drawing.Graphics,System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.PointF)">
+            <summary>
+            <inheritdoc cref="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.PointF)"/>
+            </summary>
+            <param name="graphics">Graphics object.</param>
+            <param name="s">String to draw.</param>
+            <param name="font"><see cref="T:System.Drawing.Font"/> that defines the text format of the string.</param>
+            <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the color and texture of the drawn text.</param>
+            <param name="point"><see cref="T:System.Drawing.PointF"/> structure that specifies the upper-left corner of the drawn text.</param>
+        </member>
+        <member name="M:DesktopMagic.Api.Drawing.GraphicsExtentions.DrawStringFixedWidth(System.Drawing.Graphics,System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single,System.Single)">
+            <summary>
+            <inheritdoc cref="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single)"/>
+            </summary>
+            <param name="graphics">Graphics object.</param>
+            <param name="s">String to draw.</param>
+            <param name="font"><see cref="T:System.Drawing.Font"/> that defines the text format of the string.</param>
+            <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the color and texture of the drawn text.</param>
+            <param name="x">The x-coordinate of the upper-left corner of the drawn text.</param>
+            <param name="y">The y-coordinate of the upper-left corner of the drawn text.</param>
+            /// <param name="width">The specified width.</param>
+        </member>
+        <member name="M:DesktopMagic.Api.Drawing.GraphicsExtentions.DrawStringFixedWidth(System.Drawing.Graphics,System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.PointF,System.Single)">
+            <summary>
+            <inheritdoc cref="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.PointF)"/>
+            </summary>
+            <param name="graphics">Graphics object.</param>
+            <param name="s">String to draw.</param>
+            <param name="font"><see cref="T:System.Drawing.Font"/> that defines the text format of the string.</param>
+            <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the color and texture of the drawn text.</param>
+            <param name="point"><see cref="T:System.Drawing.PointF"/> structure that specifies the upper-left corner of the drawn text.</param>
+            <param name="width">The specified width.</param>
+        </member>
+        <member name="M:DesktopMagic.Api.Drawing.GraphicsExtentions.DrawStringNoLeftPadding(System.Drawing.Graphics,System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single)">
+             <summary>
+            <inheritdoc cref="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single)"/>
+             </summary>
+             <param name="graphics">Graphics object.</param>
+             <param name="s">String to draw.</param>
+             <param name="font"><see cref="T:System.Drawing.Font"/> that defines the text format of the string.</param>
+             <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the color and texture of the drawn text.</param>
+             <param name="x">The x-coordinate of the upper-left corner of the drawn text.</param>
+             <param name="y">The y-coordinate of the upper-left corner of the drawn text.</param>
+        </member>
+        <member name="M:DesktopMagic.Api.Drawing.GraphicsExtentions.DrawStringNoLeftPadding(System.Drawing.Graphics,System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.PointF)">
+            <summary>
+            <inheritdoc cref="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.PointF)"/>
+            </summary>
+            <param name="graphics">Graphics object.</param>
+            <param name="s">String to draw.</param>
+            <param name="font"><see cref="T:System.Drawing.Font"/> that defines the text format of the string.</param>
+            <param name="brush"><see cref="T:System.Drawing.Brush"/> that determines the color and texture of the drawn text.</param>
+            <param name="point"><see cref="T:System.Drawing.PointF"/> structure that specifies the upper-left corner of the drawn text.</param>
+        </member>
+        <member name="M:DesktopMagic.Api.Drawing.GraphicsExtentions.MeasureStringNoLeftPadding(System.Drawing.Graphics,System.String,System.Drawing.Font)">
+            <summary>
+            <inheritdoc cref="M:System.Drawing.Graphics.MeasureString(System.String,System.Drawing.Font)"/>
+            </summary>
+            <param name="graphics">Graphics object.</param>
+            <param name="text">String to measure.</param>
+            <param name="font"><see cref="T:System.Drawing.Font"/> that defines the text format of the string.</param>
+            <returns></returns>
+        </member>
+        <member name="T:DesktopMagic.Api.Drawing.RenderQuality">
+            <summary>
+            Specifies which render quality is used to display the bitmap images.
+            </summary>
+        </member>
+        <member name="F:DesktopMagic.Api.Drawing.RenderQuality.High">
+            <summary>
+            Slower then <see cref="F:DesktopMagic.Api.Drawing.RenderQuality.Low"/> but produces higher quality output.
+            </summary>
+        </member>
+        <member name="F:DesktopMagic.Api.Drawing.RenderQuality.Low">
+            <summary>
+            Faster then <see cref="F:DesktopMagic.Api.Drawing.RenderQuality.High"/> but produces lower quality output.
+            </summary>
+        </member>
+        <member name="F:DesktopMagic.Api.Drawing.RenderQuality.Performance">
+            <summary>
+            Provides performance benefits over <see cref="F:DesktopMagic.Api.Drawing.RenderQuality.Low"/>
+            </summary>
+        </member>
+        <member name="T:DesktopMagic.Api.IPluginData">
+            <summary>
+             Defines properties and methods that provide information about the main application.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.IPluginData.Theme">
+            <summary>
+            Gets the current theme setting of the main application.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.IPluginData.WindowSize">
+            <summary>
+            Gets the window size of the plugin window.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.IPluginData.WindowPosition">
+            <summary>
+            Gets the window position of the plugin window.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.IPluginData.PluginName">
+            <summary>
+            Gets the name of the plugin.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.IPluginData.PluginPath">
+            <summary>
+            Gets the path of the parent directory of the plugin.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.IPluginData.UpdateWindow">
+            <summary>
+            Updates the plugin window.
+            </summary>
+        </member>
+        <member name="T:DesktopMagic.Api.ITheme">
+            <summary>
+            The theme settings of the main application.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.ITheme.PrimaryColor">
+            <summary>
+            Gets the primary color of the current theme.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.ITheme.SecondaryColor">
+            <summary>
+            Gets the secondary color of the current theme.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.ITheme.BackgroundColor">
+            <summary>
+            Gets the background color of the current theme.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.ITheme.Font">
+            <summary>
+            Gets the font of the current theme.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.ITheme.CornerRadius">
+            <summary>
+            Gets the corner radius of the current theme.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.ITheme.Margin">
+            <summary>
+            Gets the corner radius of the current theme.
+            </summary>
+        </member>
+        <member name="T:DesktopMagic.Api.Plugin">
+            <summary>
+            The plugin class.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Plugin.Application">
+            <summary>
+            Informations about the main application.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Plugin.UpdateInterval">
+            <summary>
+            Gets or sets the interval, expressed in milliseconds, at which to call the <see cref="M:DesktopMagic.Api.Plugin.Main"/> method.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Plugin.RenderQuality">
+            <summary>
+            Gets or sets the render quality of the bitmap image.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Plugin.Start">
+            <summary>
+            Occurs once when the plugin gets activated.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Plugin.Stop">
+            <summary>
+            Occurs once when the plugin gets deactivated.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Plugin.Main">
+            <summary>
+            Occurs when the <see cref="P:DesktopMagic.Api.Plugin.UpdateInterval"/> elapses.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DesktopMagic.Api.Plugin.OnMouseClick(System.Drawing.Point,DesktopMagic.Api.Settings.MouseButton)">
+            <summary>
+            Occurs when the window is clicked by the mouse.
+            </summary>
+            <param name="position">The x- and y-coordinates of the mouse pointer position relative to the plugin window.</param>
+            <param name="mouseButton">The button associated with the event.</param>
+        </member>
+        <member name="M:DesktopMagic.Api.Plugin.OnMouseMove(System.Drawing.Point)">
+            <summary>
+            Occurs when the mouse pointer is moved over the control.
+            </summary>
+            <param name="position">The x- and y-coordinates of the mouse pointer position relative to the plugin window.</param>
+        </member>
+        <member name="M:DesktopMagic.Api.Plugin.OnMouseWheel(System.Drawing.Point,System.Int32)">
+            <summary>
+            Occurs when the user rotates the mouse wheel while the mouse pointer is over this element.
+            </summary>
+            <param name="position">The x- and y-coordinates of the mouse pointer position relative to the plugin window.</param>
+            <param name="delta">A value that indicates the amount that the mouse wheel has changed.</param>
+        </member>
+        <member name="T:DesktopMagic.Api.Settings.Button">
+            <summary>
+            Represents a button control.
+            </summary>
+        </member>
+        <member name="E:DesktopMagic.Api.Settings.Button.OnClick">
+            <summary>
+            Occurs when the button gets clicked.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.Button.Value">
+            <summary>
+            Gets or sets the text caption displayed in the <see cref="T:DesktopMagic.Api.Settings.Button"/> element.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.Button.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DesktopMagic.Api.Settings.Button"/> class with the provided <paramref name="value"/>.
+            </summary>
+            <param name="value">The text caption displayed in the <see cref="T:DesktopMagic.Api.Settings.Button"/> control.</param>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.Button.Click">
+            <summary>
+            Triggers the <see cref="E:DesktopMagic.Api.Settings.Button.OnClick"/> event.
+            </summary>
+        </member>
+        <member name="T:DesktopMagic.Api.Settings.CheckBox">
+            <summary>
+            Represents a check box control.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.CheckBox.Value">
+            <summary>
+            Gets or set a value indicating whether the <see cref="T:DesktopMagic.Api.Settings.CheckBox"/> is in the checked state.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.CheckBox.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DesktopMagic.Api.Settings.CheckBox"/> class with the provided <paramref name="value"/>.
+            </summary>
+            <param name="value">A value indicating whether the <see cref="T:DesktopMagic.Api.Settings.CheckBox"/> is in the checked state.</param>
+        </member>
+        <member name="T:DesktopMagic.Api.Settings.ComboBox">
+            <summary>
+            Represents a selection control with a drop-down list.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.ComboBox.Items">
+            <summary>
+            Gets the collection used to generate the content of the <see cref="T:DesktopMagic.Api.Settings.ComboBox"/>.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.ComboBox.Value">
+            <summary>
+            Gets the currently selected item associated with this <see cref="T:DesktopMagic.Api.Settings.ComboBox"/>.
+            </summary>
+            <remarks>If you assign a value to this property, the displayed text in the user interface will not be changed.</remarks>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.ComboBox.#ctor(System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:DesktopMagic.Api.Settings.Label"/> class with the provided <paramref name="items"/>.
+            </summary>
+            <param name="items"></param>
+        </member>
+        <member name="T:DesktopMagic.Api.Settings.IntegerUpDown">
+            <summary>
+            Represents a up-down control.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.IntegerUpDown.Maximum">
+            <summary>
+            Gets or sets the maximum value for the <see cref="T:DesktopMagic.Api.Settings.IntegerUpDown"/> element.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.IntegerUpDown.Minimum">
+            <summary>
+            Gets or sets the minimum value for the <see cref="T:DesktopMagic.Api.Settings.IntegerUpDown"/> element.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.IntegerUpDown.Value">
+            <summary>
+            Gets or sets the value assigned to the <see cref="T:DesktopMagic.Api.Settings.IntegerUpDown"/> element.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.IntegerUpDown.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DesktopMagic.Api.Settings.IntegerUpDown"/> class with the provided <paramref name="min"/> value, <paramref name="max"/> value and <paramref name="value"/>.
+            </summary>
+            <param name="min">The maximum value for the <see cref="T:DesktopMagic.Api.Settings.IntegerUpDown"/> element.</param>
+            <param name="max">The minimum value for the <see cref="T:DesktopMagic.Api.Settings.IntegerUpDown"/> element.</param>
+            <param name="value">The value assigned to the <see cref="T:DesktopMagic.Api.Settings.IntegerUpDown"/> element.</param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="T:DesktopMagic.Api.Settings.Label">
+            <summary>
+            Represents a label control.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.Label.Value">
+            <summary>
+            Gets or sets the text associated with this <see cref="T:DesktopMagic.Api.Settings.Label"/>.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.Label.Bold">
+            <summary>
+            Gets or set a value indicating whether the content of the <see cref="T:DesktopMagic.Api.Settings.Label"/> is bold or not.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.Label.#ctor(System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DesktopMagic.Api.Settings.Label"/> class with the provided <paramref name="value"/>.
+            </summary>
+            <param name="value">The text associated with this <see cref="T:DesktopMagic.Api.Settings.Label"/></param>
+            <param name="bold">A value indicating whether the content of the <see cref="T:DesktopMagic.Api.Settings.Label"/> is bold or not.</param>
+        </member>
+        <member name="T:DesktopMagic.Api.Settings.MouseButton">
+            <summary>
+            Mouse Buttons
+            </summary>
+        </member>
+        <member name="F:DesktopMagic.Api.Settings.MouseButton.Left">
+            <summary>
+            The left mouse button.
+            </summary>
+        </member>
+        <member name="F:DesktopMagic.Api.Settings.MouseButton.Middle">
+            <summary>
+            The middle mouse button.
+            </summary>
+        </member>
+        <member name="F:DesktopMagic.Api.Settings.MouseButton.Right">
+            <summary>
+             The right mouse button.
+            </summary>
+        </member>
+        <member name="T:DesktopMagic.Api.Settings.Setting">
+            <summary>
+            The element base class.
+            </summary>
+        </member>
+        <member name="E:DesktopMagic.Api.Settings.Setting.OnValueChanged">
+            <summary>
+            Occurs when the value has been changed.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.Setting.ValueChanged">
+            <summary>
+            Triggers the <see cref="E:DesktopMagic.Api.Settings.Setting.OnValueChanged"/> event.
+            </summary>
+        </member>
+        <member name="T:DesktopMagic.Api.Settings.SettingAttribute">
+            <summary>
+            Marks a Property as element.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.SettingAttribute.Name">
+            <summary>
+            The name of the element.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.SettingAttribute.OrderIndex">
+            <summary>
+            The order index of the element.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.SettingAttribute.Id">
+            <summary>
+            The id of the element.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.SettingAttribute.#ctor(System.String,System.String,System.Int32)">
+            <summary>
+            Marks a Property as element with the provided <paramref name="name"/> and <paramref name="orderIndex"/>.
+            </summary>
+            <param name="id">The id of the element.</param>
+            <param name="name">The name of the element.</param>
+            <param name="orderIndex">The order index of the element.</param>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.SettingAttribute.#ctor(System.String,System.Int32)">
+            <summary>
+            Marks a Property as element with the provided <paramref name="orderIndex"/>.
+            </summary>
+            <param name="id">The id of the element.</param>
+            <param name="orderIndex">The order index of the element.</param>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.SettingAttribute.#ctor(System.String)">
+            <inheritdoc cref="T:DesktopMagic.Api.Settings.SettingAttribute"/>
+        </member>
+        <member name="T:DesktopMagic.Api.Settings.Slider">
+            <summary>
+            Represents a slider control.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.Slider.Maximum">
+            <summary>
+            Gets or sets the maximum value for the <see cref="T:DesktopMagic.Api.Settings.Slider"/> element.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.Slider.Minimum">
+            <summary>
+            Gets or sets the minimum value for the <see cref="T:DesktopMagic.Api.Settings.Slider"/> element.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.Slider.Value">
+            <summary>
+            Gets or sets the value assigned to the <see cref="T:DesktopMagic.Api.Settings.Slider"/> element.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.Slider.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DesktopMagic.Api.Settings.Slider"/> class with the provided <paramref name="min"/> value, <paramref name="max"/> value and <paramref name="value"/>.
+            </summary>
+            <param name="min">The maximum value for the <see cref="T:DesktopMagic.Api.Settings.Slider"/> element.</param>
+            <param name="max">The minimum value for the <see cref="T:DesktopMagic.Api.Settings.Slider"/> element.</param>
+            <param name="value">The value assigned to the <see cref="T:DesktopMagic.Api.Settings.Slider"/> element.</param>
+        </member>
+        <member name="T:DesktopMagic.Api.Settings.TextBox">
+            <summary>
+            Represents a text box control.
+            </summary>
+        </member>
+        <member name="P:DesktopMagic.Api.Settings.TextBox.Value">
+            <summary>
+            Gets or sets the text associated with this <see cref="T:DesktopMagic.Api.Settings.TextBox"/>.
+            </summary>
+        </member>
+        <member name="M:DesktopMagic.Api.Settings.TextBox.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DesktopMagic.Api.Settings.TextBox"/> class with the provided <paramref name="value"/>.
+            </summary>
+            <param name="value">The text associated with this control.</param>
+        </member>
+    </members>
+</doc>

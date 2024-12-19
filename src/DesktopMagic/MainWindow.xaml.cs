@@ -1,4 +1,4 @@
-﻿using DesktopMagic.BuiltInWindowElements;
+﻿using DesktopMagic.Api;
 using DesktopMagic.DataContexts;
 using DesktopMagic.Dialogs;
 using DesktopMagic.Helpers;
@@ -27,19 +27,13 @@ namespace DesktopMagic
 
         private readonly MainWindowDataContext mainWindowDataContext = new();
 
-        private readonly Dictionary<PluginMetadata, Type> builtInPlugins = new()
-        {
-            {new("Music Visualizer", 1), typeof(MusicVisualizerPlugin)},
-            {new("Time",2), typeof(TimePlugin)},
-            {new("Date",3), typeof(DatePlugin)},
-            {new("Cpu Usage", 4), typeof(CpuMonitorPlugin)}
-        };
-
         private bool loaded = false;
         private bool blockWindowsClosing = true;
         public static List<PluginWindow> Windows { get; } = [];
         public static List<string> WindowNames { get; } = [];
         internal static bool EditMode { get; set; } = false;
+
+        private PluginLoader pluginLoadContext;
 
         private DesktopMagicSettings Settings
         {
@@ -77,8 +71,6 @@ namespace DesktopMagic
 
         #region Load
 
-        private readonly Dictionary<uint, InternalPluginData> plugins = [];
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
@@ -90,6 +82,8 @@ namespace DesktopMagic
                 App.Logger.LogInfo("Created Plugins Folder", source: "Main");
 
                 //Write To Log File and Load Elements
+
+                pluginLoadContext = new PluginLoader(Path.Combine(App.ApplicationDataPath, "_shadow"));
 
                 App.Logger.LogInfo("Loading Plugin names", source: "Main");
                 LoadPlugins();
@@ -111,48 +105,8 @@ namespace DesktopMagic
         private void LoadPlugins()
         {
             mainWindowDataContext.IsLoading = true;
-            plugins.Clear();
-
-            foreach (var buildInPlugin in builtInPlugins.Keys)
-            {
-                plugins.Add(buildInPlugin.Id, new(buildInPlugin, string.Empty));
-            }
-
-            string pluginsPath = App.ApplicationDataPath + "\\Plugins";
-
-            foreach (string directory in Directory.GetDirectories(pluginsPath))
-            {
-                string? pluginDllPath = Directory.GetFiles(directory, "main.dll").FirstOrDefault();
-                string? pluginMetadataPath = Directory.GetFiles(directory, "metadata.json").FirstOrDefault();
-
-                if (pluginDllPath is null)
-                {
-                    App.Logger.LogError($"Plugin \"{directory}\" has no \"main.dll\"", source: "Main");
-                    continue;
-                }
-
-                if (pluginMetadataPath is null)
-                {
-                    App.Logger.LogWarn($"Plugin \"{directory}\" has no \"metadata.json\"", source: "Main");
-                    continue;
-                }
-
-                PluginMetadata? pluginMetadata = JsonSerializer.Deserialize<PluginMetadata>(File.ReadAllText(pluginMetadataPath));
-
-                if (pluginMetadata is null)
-                {
-                    App.Logger.LogError($"Plugin \"{directory}\" has no valid \"metadata.json\"", source: "Main");
-                    continue;
-                }
-
-                if (plugins.ContainsKey(pluginMetadata.Id))
-                {
-                    App.Logger.LogError($"Plugin \"{directory}\" has the same id as another plugin", source: "Main");
-                    continue;
-                }
-
-                plugins.Add(pluginMetadata.Id, new(pluginMetadata, directory));
-            }
+            int loadedPlugins = pluginLoadContext.LoadPluginRegistry();
+            App.Logger.LogDebug($"Loaded {loadedPlugins} plugins", source: "Plugin");
             mainWindowDataContext.IsLoading = false;
         }
 
@@ -178,20 +132,15 @@ namespace DesktopMagic
 
         private void LoadPlugin(uint pluginId)
         {
-            if (!plugins.TryGetValue(pluginId, out InternalPluginData? internalPluginData))
-            {
-                return;
-            }
-
             if (!Settings.CurrentLayout.Plugins.TryGetValue(pluginId, out PluginSettings? pluginSettings))
             {
                 pluginSettings = new PluginSettings();
                 Settings.CurrentLayout.Plugins.Add(pluginId, pluginSettings);
             }
 
-            if (WindowNames.Contains(internalPluginData.Metadata.Id.ToString()) || !pluginSettings.Enabled)
+            if (WindowNames.Contains(pluginId.ToString()) || !pluginSettings.Enabled)
             {
-                int index = WindowNames.IndexOf(internalPluginData.Metadata.Id.ToString());
+                int index = WindowNames.IndexOf(pluginId.ToString());
 
                 if (index >= 0)
                 {
@@ -211,40 +160,47 @@ namespace DesktopMagic
                 return;
             }
 
-            PluginWindow window;
+            if (!pluginLoadContext.TryGetPluginData(pluginId, out InternalPluginData? pluginData))
+            {
+                return;
+            }
 
-            if (builtInPlugins.TryGetValue(internalPluginData.Metadata, out Type? pluginType))
+            Plugin plugin;
+            try
             {
-                window = new PluginWindow((Api.Plugin)Activator.CreateInstance(pluginType)!, internalPluginData.Metadata, pluginSettings)
-                {
-                    Title = internalPluginData.Metadata.Id.ToString()
-                };
+                plugin = pluginLoadContext.LoadPlugin(pluginId);
             }
-            else
+            catch (Exception ex)
             {
-                window = new PluginWindow(internalPluginData.Metadata, pluginSettings, internalPluginData.DirectoryPath)
-                {
-                    Title = internalPluginData.Metadata.Id.ToString()
-                };
+                App.Logger.LogError(ex.Message, source: "Plugin");
+                _ = MessageBox.Show(ex.Message, $"Error \"{pluginData.Metadata.Name}\"", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
+
+            PluginWindow window = new(plugin, pluginData, pluginSettings)
+            {
+                Title = pluginData.Metadata.Id.ToString()
+            };
 
             Action? onPluginLoaded = null;
             onPluginLoaded = () =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    if (!optionsComboBox.Items.Contains(internalPluginData.Metadata))
+                    if (!optionsComboBox.Items.Contains(pluginData.Metadata))
                     {
-                        _ = optionsComboBox.Items.Add(internalPluginData.Metadata);
+                        _ = optionsComboBox.Items.Add(pluginData.Metadata);
                     }
                     optionsComboBox.SelectedIndex = -1;
-                    optionsComboBox.SelectedIndex = optionsComboBox.Items.IndexOf(internalPluginData.Metadata);
+                    optionsComboBox.SelectedIndex = optionsComboBox.Items.IndexOf(pluginData.Metadata);
                     window.PluginLoaded -= onPluginLoaded;
                 });
             };
+
             window.OnExit += () =>
             {
                 pluginSettings.Enabled = false;
+                pluginLoadContext.UnloadPlugin(pluginId);
             };
             window.PluginLoaded += onPluginLoaded;
 
@@ -252,6 +208,7 @@ namespace DesktopMagic
             window.Show();
             window.ContentRendered += DisplayWindow_ContentRendered;
             window.Closing += DisplayWindow_Closing;
+            window.Closed += DisplayWindow_Closed;
             Windows.Add(window);
             WindowNames.Add(window.Title);
         }
@@ -270,6 +227,16 @@ namespace DesktopMagic
         private void DisplayWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = blockWindowsClosing;
+        }
+
+        private void DisplayWindow_Closed(object? sender, EventArgs e)
+        {
+            if (sender is not PluginWindow window)
+            {
+                return;
+            }
+
+            pluginLoadContext.UnloadPlugin(window.PluginMetadata.Id);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -562,23 +529,21 @@ namespace DesktopMagic
             bool showWindow = true;
 
             // Load plugins
-            foreach (uint pluginId in plugins.Keys)
+            foreach (InternalPluginData pluginData in pluginLoadContext.PluginRegistry)
             {
-                InternalPluginData internalPluginData = plugins[pluginId];
-
                 // Add plugin to layout if it doesn't exist
-                if (!Settings.CurrentLayout.Plugins.TryGetValue(pluginId, out PluginSettings? pluginSettings))
+                if (!Settings.CurrentLayout.Plugins.TryGetValue(pluginData.Metadata.Id, out PluginSettings? pluginSettings))
                 {
-                    Settings.CurrentLayout.Plugins.Add(pluginId, new PluginSettings() { Name = internalPluginData.Metadata.Name });
+                    Settings.CurrentLayout.Plugins.Add(pluginData.Metadata.Id, new PluginSettings() { Name = pluginData.Metadata.Name });
 
                     continue;
                 }
 
-                pluginSettings.Name = internalPluginData.Metadata.Name;
+                pluginSettings.Name = pluginData.Metadata.Name;
 
                 if (pluginSettings.Enabled)
                 {
-                    LoadPlugin(pluginId);
+                    LoadPlugin(pluginData.Metadata.Id);
                 }
 
                 if (showWindow && pluginSettings.Enabled)
@@ -590,7 +555,7 @@ namespace DesktopMagic
             // Remove plugins that are not loaded anymore
             foreach (uint pluginId in Settings.CurrentLayout.Plugins.Keys)
             {
-                if (!plugins.ContainsKey(pluginId))
+                if (!pluginLoadContext.TryGetPluginData(pluginId, out _))
                 {
                     Settings.CurrentLayout.Plugins.Remove(pluginId);
                 }

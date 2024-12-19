@@ -9,10 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Threading;
 using System.Timers;
 using System.Windows;
@@ -33,14 +31,15 @@ public partial class PluginWindow : Window
     private Thread? pluginThread;
     private System.Timers.Timer? valueTimer;
     private Plugin? pluginClassInstance;
-    private AssemblyLoadContext loadContext;
 
     public bool IsRunning { get; private set; } = true;
     public PluginMetadata PluginMetadata { get; private set; }
     public string PluginFolderPath { get; private set; }
 
-    public PluginWindow(PluginMetadata pluginMetadata, PluginSettings settings, string pluginFolderPath)
+    internal PluginWindow(Plugin pluginInstance, InternalPluginData pluginData, PluginSettings settings)
     {
+        pluginClassInstance = pluginInstance;
+
         InitializeComponent();
 
         Window w = new()
@@ -64,7 +63,7 @@ public partial class PluginWindow : Window
         updateTimer.Elapsed += UpdateTimer_Elapsed;
         updateTimer.Start();
 
-        PluginMetadata = pluginMetadata;
+        PluginMetadata = pluginData.Metadata;
         this.settings = settings;
 
         Left = settings.Position.X;
@@ -72,14 +71,7 @@ public partial class PluginWindow : Window
         Width = settings.Size.X;
         Height = settings.Size.Y;
 
-        PluginFolderPath = pluginFolderPath;
-
-        loadContext = new AssemblyLoadContext(pluginMetadata.Name, true);
-    }
-
-    public PluginWindow(Plugin pluginClassInstance, PluginMetadata pluginMetadata, PluginSettings settings) : this(pluginMetadata, settings, string.Empty)
-    {
-        this.pluginClassInstance = pluginClassInstance;
+        PluginFolderPath = pluginData.DirectoryPath;
     }
 
     public void UpdatePluginWindow()
@@ -126,7 +118,7 @@ public partial class PluginWindow : Window
     private void Window_ContentRendered(object? sender, EventArgs e)
     {
         App.Logger.LogInfo($"\"{PluginMetadata.Name}\" - Starting plugin thread", source: "Plugin");
-        pluginThread = new Thread(LoadPlugin);
+        pluginThread = new Thread(RunPlugin);
         pluginThread.Start();
     }
 
@@ -174,65 +166,9 @@ public partial class PluginWindow : Window
         }
     }
 
-    private void LoadPlugin()
+    private void RunPlugin()
     {
-        App.Logger.LogInfo($"\"{PluginMetadata.Name}\" - Loading plugin", source: "Plugin");
-
-        if (pluginClassInstance is null && !File.Exists($"{PluginFolderPath}\\main.dll"))
-        {
-            App.Logger.LogError($"\"{PluginMetadata.Name}\" - File \"main.dll\" does not exist", source: "Plugin");
-            _ = MessageBox.Show("File \"main.dll\" does not exist!", $"Error \"{PluginMetadata.Name}\"", MessageBoxButton.OK, MessageBoxImage.Error);
-
-            Exit();
-            return;
-        }
-
-        try
-        {
-            ExecuteSource();
-        }
-        catch (Exception ex)
-        {
-            App.Logger.LogError($"\"{PluginMetadata.Name}\" - {ex}", source: "Plugin");
-            _ = MessageBox.Show("File execution error:\n" + ex, $"Error \"{PluginMetadata.Name}\"", MessageBoxButton.OK, MessageBoxImage.Error);
-            Exit();
-            return;
-        }
-        PluginLoaded?.Invoke();
-    }
-
-    private void ExecuteSource()
-    {
-        object? instance = pluginClassInstance;
-        if (instance is null)
-        {
-            Assembly dll = loadContext.LoadFromAssemblyPath($"{PluginFolderPath}\\main.dll");
-            Type? instanceType = Array.Find(dll.GetTypes(), type => type.GetTypeInfo().BaseType == typeof(Plugin));
-
-            if (instanceType is null)
-            {
-                App.Logger.LogError($"\"{PluginMetadata.Name}\" - The \"Plugin\" class could not be found! It has to inherit from \"{typeof(Plugin).FullName}\"", source: "Plugin");
-                _ = MessageBox.Show($"The \"Plugin\" class could not be found! It has to inherit from \"{typeof(Plugin).FullName}\"", $"Error \"{PluginMetadata.Name}\"", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                Exit();
-                return;
-            }
-
-            instance = Activator.CreateInstance(instanceType);
-        }
-
-        if (instance is Plugin plugin)
-        {
-            pluginClassInstance = plugin;
-            pluginClassInstance.Application = new PluginData(this, settings);
-        }
-        else
-        {
-            App.Logger.LogError($"\"{PluginMetadata.Name}\" - The \"Plugin\" class could not be found! It has to inherit from \"{typeof(Plugin).FullName}\"", source: "Plugin");
-            _ = MessageBox.Show($"The \"Plugin\" class has to inherit from \"{typeof(Plugin).FullName}\"", $"Error \"{PluginMetadata.Name}\"", MessageBoxButton.OK, MessageBoxImage.Error);
-            Exit();
-            return;
-        }
+        pluginClassInstance.Application = new PluginData(this, settings);
 
         LoadOptions(pluginClassInstance);
         BindDefaultSettings(pluginClassInstance);
@@ -251,6 +187,8 @@ public partial class PluginWindow : Window
             valueTimer.Interval = pluginClassInstance.UpdateInterval;
             valueTimer.Start();
         }
+
+        PluginLoaded?.Invoke();
     }
 
     private void BindDefaultSettings(Plugin pluginClassInstance)
@@ -389,7 +327,8 @@ public partial class PluginWindow : Window
         App.Logger.LogInfo($"\"{PluginMetadata.Name}\" - Stopping plugin", source: "Plugin");
         IsRunning = false;
         pluginClassInstance?.Stop();
-        loadContext.Unload();
+        pluginClassInstance = null;
+        settings.Settings = [];
     }
 
     #region Window Events
