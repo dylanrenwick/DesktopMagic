@@ -9,12 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Packaging;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text.Json;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -33,7 +32,7 @@ namespace DesktopMagic
         public static List<string> WindowNames { get; } = [];
         internal static bool EditMode { get; set; } = false;
 
-        private PluginLoader pluginLoadContext;
+        private readonly PluginLoader pluginLoadContext = new();
 
         private DesktopMagicSettings Settings
         {
@@ -82,8 +81,6 @@ namespace DesktopMagic
                 App.Logger.LogInfo("Created Plugins Folder", source: "Main");
 
                 //Write To Log File and Load Elements
-
-                pluginLoadContext = new PluginLoader(Path.Combine(App.ApplicationDataPath, "_shadow"));
 
                 App.Logger.LogInfo("Loading Plugin names", source: "Main");
                 LoadPlugins();

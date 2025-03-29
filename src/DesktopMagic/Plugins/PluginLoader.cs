@@ -22,19 +22,10 @@ internal class PluginLoader
         {new("Cpu Usage", 4), typeof(CpuMonitorPlugin)}
     };
 
-    private readonly string shadowDirectory;
-
     private readonly Dictionary<uint, InternalPluginData> pluginRegistry = [];
     private readonly Dictionary<uint, PluginLoadContext> loadedPlugins = [];
 
     public IEnumerable<InternalPluginData> PluginRegistry => pluginRegistry.Values;
-
-    public PluginLoader(string shadowDir)
-    {
-        shadowDirectory = shadowDir;
-
-        Directory.CreateDirectory(shadowDirectory);
-    }
 
     public int LoadPluginRegistry()
     {
