@@ -102,6 +102,7 @@ internal class PluginLoader
         App.Logger.LogInfo($"\"{pluginData.Metadata.Name}\" - Loading plugin", source: "Plugin");
 
         AssemblyLoadContext loadContext = new(pluginData.Metadata.Name, true);
+        loadContext.Resolving += pluginData.LoadDependency;
         if (!Path.Exists(Path.Combine(pluginData.DirectoryPath, "main.dll")))
             throw new IOException($"\"{pluginData.Metadata.Name}\" - File \"main.dll\" does not exist");
 

@@ -641,5 +641,15 @@ namespace DesktopMagic
     {
         public PluginMetadata Metadata { get; set; } = pluginMetadata;
         public string DirectoryPath { get; set; } = directoryPath;
+
+        public Assembly? LoadDependency(AssemblyLoadContext context, AssemblyName assemblyName)
+        {
+            string assemblyPath = Path.Combine(DirectoryPath, assemblyName.Name = ".dll");
+            if (!File.Exists(assemblyPath))
+            {
+                return null;
+            }
+            return context.LoadFromAssemblyPath(assemblyPath);
+        }
     }
 }
