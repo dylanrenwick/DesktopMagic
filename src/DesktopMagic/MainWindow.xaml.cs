@@ -10,8 +10,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Loader;
 using System.Text.Json;
 using System.Threading;
 using System.Windows;
@@ -631,22 +629,6 @@ namespace DesktopMagic
                 dict.Source = new Uri("..\\Resources\\Strings\\StringResources.en.xaml", UriKind.Relative);
             }
             Resources.MergedDictionaries.Add(dict);
-        }
-    }
-
-    internal class InternalPluginData(PluginMetadata pluginMetadata, string directoryPath)
-    {
-        public PluginMetadata Metadata { get; set; } = pluginMetadata;
-        public string DirectoryPath { get; set; } = directoryPath;
-
-        public Assembly? LoadDependency(AssemblyLoadContext context, AssemblyName assemblyName)
-        {
-            string assemblyPath = Path.Combine(DirectoryPath, assemblyName.Name = ".dll");
-            if (!File.Exists(assemblyPath))
-            {
-                return null;
-            }
-            return context.LoadFromAssemblyPath(assemblyPath);
         }
     }
 }
